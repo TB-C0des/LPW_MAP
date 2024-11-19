@@ -1,0 +1,272 @@
+Implement Library Management System with CRUD operation using REST API  test it with Postman API.
+Give codes required and also commands to run and test
+Give all the code and instructions in one BLOCK
+
+Step 3: Create the Server Code
+Create a file named server.js
+javascript
+Insert Code
+Edit
+Copy code
+const express = require('express');
+const bodyParser = require('body-parser');
+const mysql = require('mysql');
+const cors = require('cors');
+
+const app = express();
+const port = 3000;
+
+app.use(cors());
+app.use(bodyParser.json());
+
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: 'your_password',
+    database: 'library_management'
+});
+
+db.connect(err => {
+    if (err) throw err;
+    console.log('MySQL Connected...');
+});
+
+// Create a book
+app.post('/books', (req, res) => {
+    const book = req.body;
+    const sql = 'INSERT INTO books SET ?';
+    db.query(sql, book, (err, result) => {
+        if (err) throw err;
+        res.status(201).send(`Book added with ID: ${result.insertId}`);
+    });
+});
+
+// Read all books
+app.get('/books', (req, res) => {
+    const sql = 'SELECT * FROM books';
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        res.send(results);
+    });
+});
+
+// Read a single book
+app.get('/books/:id', (req, res) => {
+    const sql = 'SELECT * FROM books WHERE id = ?';
+    db.query(sql, [req.params.id], (err, result) => {
+        if (err) throw err;
+        res.send(result);
+    });
+});
+
+// Update a book
+app.put('/books/:id', (req, res) => {
+    const sql = 'UPDATE books SET ? WHERE id = ?';
+    db.query(sql, [req.body, req.params.id], (err, result) => {
+        if (err) throw err;
+        res.send(`Book updated with ID: ${req.params.id}`);
+    });
+});
+
+// Delete a book
+app.delete('/books/:id', (req, res) => {
+    const sql = 'DELETE FROM books WHERE id = ?';
+    db.query(sql, [req.params.id], (err, result) => {
+        if (err) throw err;
+        res.send(`Book deleted with ID: ${req.params.id}`);
+    });
+});
+
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+});
+Step 4: Run the Application
+Start the Server
+bash
+Insert Code
+Edit
+Copy code
+node server.js
+Step 5: Test with Postman
+Open Postman and perform the following API calls:
+
+Create a Book (POST)
+
+URL: http://localhost:3000/books
+Body (JSON):
+json
+Insert Code
+Edit
+Copy code
+{
+    "title": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "published_date": "1925-04-10",
+    "isbn": "9780743273565"
+}
+Get All Books (GET)
+
+URL: http://localhost:3000/books
+Get a Single Book (GET)
+
+URL: http://localhost:3000/books/1 (replace 1 with the actual ID)
+Update a Book (PUT)
+
+URL: http://localhost:3000/books/1 (replace 1
+
+Shar
+Step 1: Set Up Your Environment
+Install Node.js: Make sure you have Node.js installed. You can download it from nodejs.org.
+
+Install MySQL: Make sure you have MySQL installed. You can download it from mysql.com.
+
+Create a MySQL Database: Open MySQL and create a database for your library management system.
+
+sql
+Insert Code
+Edit
+Copy code
+CREATE DATABASE library_management;
+USE library_management;
+
+CREATE TABLE books (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    author VARCHAR(255) NOT NULL,
+    published_year INT,
+    genre VARCHAR(100)
+);
+Step 2: Create the Node.js Application
+Create a new directory for your project:
+
+bash
+Insert Code
+Edit
+Copy code
+mkdir library-management-system
+cd library-management-system
+Initialize a new Node.js project:
+
+bash
+Insert Code
+Edit
+Copy code
+npm init -y
+Install required packages:
+
+bash
+Insert Code
+Edit
+Copy code
+npm install express mysql body-parser cors
+Create the server file:
+
+Create a file named server.js and add the following code:
+
+javascript
+Insert Code
+Edit
+Copy code
+const express = require('express');
+const mysql = require('mysql');
+const bodyParser = require('body-parser');
+const cors = require('cors');
+
+const app = express();
+const port = 3000;
+
+app.use(cors());
+app.use(bodyParser.json());
+
+// MySQL connection
+const db = mysql.createConnection({
+    host: 'localhost',
+    user: 'root', // your MySQL username
+    password: '', // your MySQL password
+    database: 'library_management'
+});
+
+db.connect((err) => {
+    if (err) throw err;
+    console.log('MySQL Connected...');
+});
+
+// CRUD operations
+
+// Create a new book
+app.post('/books', (req, res) => {
+    const book = req.body;
+    const sql = 'INSERT INTO books SET ?';
+    db.query(sql, book, (err, result) => {
+        if (err) throw err;
+        res.status(201).send(`Book added with ID: ${result.insertId}`);
+    });
+});
+
+// Read all books
+app.get('/books', (req, res) => {
+    const sql = 'SELECT * FROM books';
+    db.query(sql, (err, results) => {
+        if (err) throw err;
+        res.send(results);
+    });
+});
+
+// Read a single book
+app.get('/books/:id', (req, res) => {
+    const sql = 'SELECT * FROM books WHERE id = ?';
+    db.query(sql, [req.params.id], (err, result) => {
+        if (err) throw err;
+        res.send(result[0]);
+    });
+});
+
+// Update a book
+app.put('/books/:id', (req, res) => {
+    const sql = 'UPDATE books SET ? WHERE id = ?';
+    db.query(sql, [req.body, req.params.id], (err, result) => {
+        if (err) throw err;
+        res.send('Book updated successfully.');
+    });
+});
+
+// Delete a book
+app.delete('/books/:id', (req, res) => {
+    const sql = 'DELETE FROM books WHERE id = ?';
+    db.query(sql, [req.params.id], (err, result) => {
+        if (err) throw err;
+        res.send('Book deleted successfully.');
+    });
+});
+
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
+});
+Step 3: Run Your Application
+Start the server:
+
+bash
+Insert Code
+Edit
+Copy code
+node server.js
+You should see the message Server running on http://localhost:3000.
+
+Step 4: Test with Postman
+Open Postman.
+
+Create a new book:
+
+Method: POST
+URL: http://localhost:3000/books
+Body (JSON):
+json
+Insert Code
+Edit
+Copy code
+{
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "published_year": 1925,
+  "genre": "Fiction"
+}
